@@ -34,7 +34,7 @@ import BMap  from 'BMap';
 import * as mapv from 'mapv';
 import { Card, Table,Form, Row, Col, Statistic, Button, Icon, Input, Modal, Radio, Select, Divider,Menu, Dropdown} from 'antd';
 import SubMenu from 'antd/lib/menu/SubMenu';
-import { DownOutlined, PlusOutlined,PlusCircleOutlined } from '@ant-design/icons';
+import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -1606,7 +1606,7 @@ class QueryCompanyForm extends React.Component{
         return (
             <Form layout="inline">
                 <FormItem>
-                    <PlusCircleOutlined  onClick={this.addCompanies}/>
+                    {/* <PlusCircleOutlined  onClick={this.addCompanies}/> */}
                     <Modal
                             title=""
                             visible={this.state.visible}
