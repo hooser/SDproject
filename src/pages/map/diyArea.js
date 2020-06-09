@@ -30,7 +30,6 @@ import SourceCluster from "ol/source/Cluster";
 import {createEmpty, extend as OlExtend, getHeight as OlGetHeight, getWidth as OlGetWidth} from "ol/extent";
 import '../../config/envConfig'
 
-import BMap  from 'BMap';
 import * as mapv from 'mapv';
 
 const FormItem = Form.Item;
@@ -78,9 +77,9 @@ export default class ListedMapBD extends React.Component{
     fnAddmarker = (point) => {
             let prepoint = overlays.length>0? overlays[overlays.length-1]:point;
             overlays.push(point);           
-            let polyline = new BMap.Polyline([prepoint,point], {strokeColor:"blue", strokeWeight:4, strokeOpacity:0.6});     
+            let polyline = new window.BMap.Polyline([prepoint,point], {strokeColor:"blue", strokeWeight:4, strokeOpacity:0.6});     
             this.map.addOverlay(polyline);   
-            let mark = new BMap.Marker(point);
+            let mark = new window.BMap.Marker(point);
             this.setState({clickonzdy:true});
             // console.log(this.state.clickonzdy);
             this.map.addOverlay(mark);  // 将标注添加到地图中 
@@ -94,17 +93,17 @@ export default class ListedMapBD extends React.Component{
             this.setState({isdragg:false});//只能实添加一次，即以后的isdragg全是false
             for(let i=0;i<overlays.length;i++) {
                 os.push(overlays[i]);
-                os.push(new BMap.Point(((overlays[i].lng+overlays[(i+1)%overlays.length].lng)/2).toFixed(6),
+                os.push(new window.BMap.Point(((overlays[i].lng+overlays[(i+1)%overlays.length].lng)/2).toFixed(6),
                     ((overlays[i].lat+overlays[(i+1)%overlays.length].lat)/2).toFixed(6)));
             }
         }else if(id>=0)  {
             
             os = overlays;//先在id后面添加，再在id前面添加 
-            os.splice(id+1,0,new BMap.Point(
+            os.splice(id+1,0,new window.BMap.Point(
                     ((overlays[id].lng+overlays[(id+1)%overlays.length].lng)/2).toFixed(6),
                     ((overlays[id].lat+overlays[(id+1)%overlays.length].lat)/2).toFixed(6)
                 )); 
-            os.splice(id==0?overlays.length:id,0,new BMap.Point(
+            os.splice(id==0?overlays.length:id,0,new window.BMap.Point(
                     ((overlays[(id==0?overlays.length-1:id-1)%overlays.length].lng+overlays[(id)%overlays.length].lng)/2).toFixed(6),
                     ((overlays[(id==0?overlays.length-1:id-1)%overlays.length].lat+overlays[(id)%overlays.length].lat)/2).toFixed(6)
                 ));
@@ -120,8 +119,8 @@ export default class ListedMapBD extends React.Component{
         this.fnAddPoint(); 
         const {isht} = this.state; 
         if(!isht&&overlays.length>2) {//两个节点是不能形成面的
-            let polygon = new BMap.Polygon(overlays, null);  //创建多边形
-            // var polygon =  new BMap.Polygon(overlays, {strokeColor:156, strokeWeight:2, strokeOpacity:0.5,fillColor:155});  //创建多边形
+            let polygon = new window.BMap.Polygon(overlays, null);  //创建多边形
+            // var polygon =  new window.BMap.Polygon(overlays, {strokeColor:156, strokeWeight:2, strokeOpacity:0.5,fillColor:155});  //创建多边形
             this.map.addOverlay(polygon);   //增加多边形      
             this.setState({isht:true});
         }     
@@ -158,7 +157,7 @@ export default class ListedMapBD extends React.Component{
         {
             let fnadd = this.fnAddmarker;
                 this.map.addEventListener('click', function(e){ //监听
-                fnadd(new BMap.Point(e.point.lng,e.point.lat));  
+                fnadd(new window.BMap.Point(e.point.lng,e.point.lat));  
             }); 
         }
         else
@@ -181,11 +180,11 @@ export default class ListedMapBD extends React.Component{
 
     // 渲染地图
     renderOlMap = () => {
-        let map = new BMap.Map("container"); // 创建Map实例
-        // let map = new BMap.Map('baidumap');
-        map.centerAndZoom(new BMap.Point(104.284, 37.548), 5.5); // 初始化地图,设置中心点坐标和地图级别
-        map.addControl(new BMap.NavigationControl());
-        // map.addControl(new BMap.MapTypeControl()); //添加地图类型控件
+        let map = new window.BMap.Map("container"); // 创建Map实例
+        // let map = new window.BMap.Map('baidumap');
+        map.centerAndZoom(new window.BMap.Point(104.284, 37.548), 5.5); // 初始化地图,设置中心点坐标和地图级别
+        map.addControl(new window.BMap.NavigationControl());
+        // map.addControl(new window.BMap.MapTypeControl()); //添加地图类型控件
         map.setCurrentCity("北京"); // 设置地图显示的城市 此项是必须设置的
         map.enableScrollWheelZoom();
         map.enableContinuousZoom();

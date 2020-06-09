@@ -30,7 +30,6 @@ import SourceCluster from "ol/source/Cluster";
 import {createEmpty, extend as OlExtend, getHeight as OlGetHeight, getWidth as OlGetWidth} from "ol/extent";
 import '../../config/envConfig'
 
-import BMap  from 'BMap';
 import * as mapv from 'mapv';
 
 const FormItem = Form.Item;
@@ -326,7 +325,7 @@ export default class ListedMapBD extends React.Component{
 
     getBoundary = (province, color) => {
         this.map.clearOverlays();
-        let bdary = new BMap.Boundary();
+        let bdary = new window.BMap.Boundary();
         bdary.get(province, (rs) => {       //获取行政区域
             // this.map.clearOverlays();        //清除地图覆盖物
             let count = rs.boundaries.length; //行政区域的点有多少个
@@ -336,7 +335,7 @@ export default class ListedMapBD extends React.Component{
             }
             let pointArray = [];
             for (let i = 0; i < count; i++) {
-                let ply = new BMap.Polygon(rs.boundaries[i], {
+                let ply = new window.BMap.Polygon(rs.boundaries[i], {
                     strokeWeight: 0.1,
                     strokeOpacity: 0,
                     strokeStyle: '',
@@ -352,7 +351,7 @@ export default class ListedMapBD extends React.Component{
     move2Location = (province) => {
         let center;
         if (province === undefined || province === '全国') {
-            center = new BMap.Point(104.284, 37.548);
+            center = new window.BMap.Point(104.284, 37.548);
             this.map.setZoom(5);
             setTimeout(() => {
                 this.map.panTo(center);
@@ -368,7 +367,7 @@ export default class ListedMapBD extends React.Component{
             }
         }).then( (data) => {
             if (data) {
-                center = new BMap.Point(parseInt(data.lon), parseInt(data.lat));
+                center = new window.BMap.Point(parseInt(data.lon), parseInt(data.lat));
                 this.map.panTo(center);
                 setTimeout(() => {
                     this.zoomInSlow(this.map.getZoom(), 6, 0.5);
@@ -478,10 +477,10 @@ export default class ListedMapBD extends React.Component{
 
     // 渲染地图
     renderOlMap = () => {
-        let map = new BMap.Map("container"); // 创建Map实例
-        map.centerAndZoom(new BMap.Point(104.284, 37.548), 5.5); // 初始化地图,设置中心点坐标和地图级别
-        map.addControl(new BMap.NavigationControl());
-        // map.addControl(new BMap.MapTypeControl()); //添加地图类型控件
+        let map = new window.BMap.Map("container"); // 创建Map实例
+        map.centerAndZoom(new window.BMap.Point(104.284, 37.548), 5.5); // 初始化地图,设置中心点坐标和地图级别
+        map.addControl(new window.BMap.NavigationControl());
+        // map.addControl(new window.BMap.MapTypeControl()); //添加地图类型控件
         map.setCurrentCity("北京"); // 设置地图显示的城市 此项是必须设置的
         map.enableScrollWheelZoom();
         map.enableContinuousZoom();

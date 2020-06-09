@@ -1,6 +1,5 @@
 import React from 'react'
 import { Card, Form, Row, Col, Statistic, Button, Icon, Input, Modal, Radio, Select, Upload, message, Tooltip} from 'antd'
-import BMap  from 'BMap';
 import axios from "../../axios";
 
 const FormItem = Form.Item;
@@ -15,10 +14,10 @@ export default class bdMap extends React.Component{
     };
     map = null;
     componentDidMount(){
-        let map = new BMap.Map("address"); // 创建Map实例
-        map.centerAndZoom(new BMap.Point(104.284, 37.548), 6); // 初始化地图,设置中心点坐标和地图级别
-        map.addControl(new BMap.NavigationControl());
-        // map.addControl(new BMap.MapTypeControl()); //添加地图类型控件
+        let map = new window.BMap.Map("address"); // 创建Map实例
+        map.centerAndZoom(new window.BMap.Point(104.284, 37.548), 6); // 初始化地图,设置中心点坐标和地图级别
+        map.addControl(new window.BMap.NavigationControl());
+        // map.addControl(new window.BMap.MapTypeControl()); //添加地图类型控件
         map.setCurrentCity("北京"); // 设置地图显示的城市 此项是必须设置的
         map.enableScrollWheelZoom();
         map.enableContinuousZoom();
@@ -362,7 +361,7 @@ export default class bdMap extends React.Component{
     };
 
     getBoundary = (province, color) => {
-        let bdary = new BMap.Boundary();
+        let bdary = new window.BMap.Boundary();
         bdary.get(province, (rs) => {       //获取行政区域
             // this.map.clearOverlays();        //清除地图覆盖物
             let count = rs.boundaries.length; //行政区域的点有多少个
@@ -373,7 +372,7 @@ export default class bdMap extends React.Component{
             }
             let pointArray = [];
             for (let i = 0; i < count; i++) {
-                let ply = new BMap.Polygon(rs.boundaries[i], {
+                let ply = new window.BMap.Polygon(rs.boundaries[i], {
                     strokeWeight: 1,
                     strokeOpacity: 0.5,
                     strokeStyle: 'solid',
@@ -397,11 +396,11 @@ export default class bdMap extends React.Component{
      **/
     addLegend = (html) => {
         function LegendControl() {
-            this.defaultAnchor = window.BMAP_ANCHOR_BOTTOM_RIGHT;
-            this.defaultOffset = new BMap.Size(10, 10);
+            this.defaultAnchor = window.window.BMap_ANCHOR_BOTTOM_RIGHT;
+            this.defaultOffset = new window.BMap.Size(10, 10);
         }
 
-        LegendControl.prototype = new BMap.Control();
+        LegendControl.prototype = new window.BMap.Control();
         LegendControl.prototype.initialize =  () =>{
             const div = document.createElement('div');
             // 添加文字说明

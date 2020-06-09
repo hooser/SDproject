@@ -38,7 +38,6 @@ import SourceCluster from "ol/source/Cluster";
 import {createEmpty, extend as OlExtend, getHeight as OlGetHeight, getWidth as OlGetWidth} from "ol/extent";
 import { post } from "axios";
 
-import BMap  from 'BMap';
 import * as mapv from 'mapv';
 
 import XLSX from 'xlsx';
@@ -91,10 +90,10 @@ export default class ListedMap extends React.Component{
         //     //layers: [osmLayer, this.companyLayer, this.heatMapLayer]
         //     layers: [osmLayer]
         // });
-        let map = new BMap.Map("container"); // 创建Map实例
-        map.centerAndZoom(new BMap.Point(104.284, 37.548), 5.5); // 初始化地图,设置中心点坐标和地图级别
-        map.addControl(new BMap.NavigationControl());
-        // map.addControl(new BMap.MapTypeControl()); //添加地图类型控件
+        let map = new window.BMap.Map("container"); // 创建Map实例
+        map.centerAndZoom(new window.BMap.Point(104.284, 37.548), 5.5); // 初始化地图,设置中心点坐标和地图级别
+        map.addControl(new window.BMap.NavigationControl());
+        // map.addControl(new window.BMap.MapTypeControl()); //添加地图类型控件
         map.setCurrentCity("北京"); // 设置地图显示的城市 此项是必须设置的
         map.enableScrollWheelZoom();
         map.enableContinuousZoom();
