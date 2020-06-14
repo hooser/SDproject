@@ -30,6 +30,7 @@ import SourceCluster from "ol/source/Cluster";
 import {createEmpty, extend as OlExtend, getHeight as OlGetHeight, getWidth as OlGetWidth} from "ol/extent";
 import '../../config/envConfig'
 
+import BMap  from 'BMap';
 import * as mapv from 'mapv';
 import { Card, Table,Form, Row, Col, Statistic, Button, Icon, Input, Modal, Radio, Select, Divider,Menu, Dropdown} from 'antd';
 import SubMenu from 'antd/lib/menu/SubMenu';
@@ -114,6 +115,7 @@ export default class ListedMapBD extends React.Component{
 
         let request_json = null;                            //请求json
         if(this.state.companyType == "所有"){               //显示所有类型的企业
+            // companyKey = ["listed_company","china_top_500","tech_center"];
         }
         else
         {
@@ -123,13 +125,19 @@ export default class ListedMapBD extends React.Component{
     
         if(this.state.currentProvince == "全国")
         {
+            // provinceKey = ["上海","云南省","内蒙古自治区","北京","吉林省","四川省","天津","宁夏回族自治区","安徽省","山东省","山西省","广东省","广西壮族自治区","新疆维吾尔自治区","江苏省","江西省","河北省","河南省","浙江省","湖北省","海南省","湖南省","甘肃省","福建省","西藏自治区","贵州省","辽宁省","重庆","陕西省","青海省","黑龙江省"];
         }
         else
         {
             provinceKey = [];
             provinceKey.push(this.state.currentProvince);
         }
-        
+
+        console.log("provinceKey="+provinceKey);
+        console.log("companyKey="+companyKey);
+        // console.log("this.state.="+this.state.currentIndustry);
+        console.log("this.state.currentProvince="+this.state.currentProvince);
+        console.log("this.state.currentIndustry="+this.state.currentIndustry);
         if(this.state.currentIndustry == "所有")           //不要该字段
         {
             request_json = {
@@ -256,9 +264,9 @@ export default class ListedMapBD extends React.Component{
     fnAddmarker = (point) => {
             let prepoint = overlays.length>0? overlays[overlays.length-1]:point;
             overlays.push(point);           
-            let polyline = new window.BMap.Polyline([prepoint,point], {strokeColor:"blue", strokeWeight:4, strokeOpacity:0.6});     
+            let polyline = new BMap.Polyline([prepoint,point], {strokeColor:"blue", strokeWeight:4, strokeOpacity:0.6});     
             this.map.addOverlay(polyline);   
-            let mark = new window.BMap.Marker(point);
+            let mark = new BMap.Marker(point);
             this.setState({clickonzdy:true});
             // console.log(this.state.clickonzdy);
             this.map.addOverlay(mark);  // 将标注添加到地图中 
@@ -272,17 +280,17 @@ export default class ListedMapBD extends React.Component{
             this.setState({isdragg:false});//只能实添加一次，即以后的isdragg全是false
             for(let i=0;i<overlays.length;i++) {
                 os.push(overlays[i]);
-                os.push(new window.BMap.Point(((overlays[i].lng+overlays[(i+1)%overlays.length].lng)/2).toFixed(6),
+                os.push(new BMap.Point(((overlays[i].lng+overlays[(i+1)%overlays.length].lng)/2).toFixed(6),
                     ((overlays[i].lat+overlays[(i+1)%overlays.length].lat)/2).toFixed(6)));
             }
         }else if(id>=0)  {
             
             os = overlays;//先在id后面添加，再在id前面添加 
-            os.splice(id+1,0,new window.BMap.Point(
+            os.splice(id+1,0,new BMap.Point(
                     ((overlays[id].lng+overlays[(id+1)%overlays.length].lng)/2).toFixed(6),
                     ((overlays[id].lat+overlays[(id+1)%overlays.length].lat)/2).toFixed(6)
                 )); 
-            os.splice(id==0?overlays.length:id,0,new window.BMap.Point(
+            os.splice(id==0?overlays.length:id,0,new BMap.Point(
                     ((overlays[(id==0?overlays.length-1:id-1)%overlays.length].lng+overlays[(id)%overlays.length].lng)/2).toFixed(6),
                     ((overlays[(id==0?overlays.length-1:id-1)%overlays.length].lat+overlays[(id)%overlays.length].lat)/2).toFixed(6)
                 ));
@@ -298,8 +306,8 @@ export default class ListedMapBD extends React.Component{
         this.fnAddPoint(); 
         const {isht} = this.state; 
         if(!isht&&overlays.length>2) {//两个节点是不能形成面的
-            let polygon = new window.BMap.Polygon(overlays, null);  //创建多边形
-            // var polygon =  new window.BMap.Polygon(overlays, {strokeColor:156, strokeWeight:2, strokeOpacity:0.5,fillColor:155});  //创建多边形
+            let polygon = new BMap.Polygon(overlays, null);  //创建多边形
+            // var polygon =  new BMap.Polygon(overlays, {strokeColor:156, strokeWeight:2, strokeOpacity:0.5,fillColor:155});  //创建多边形
             this.map.addOverlay(polygon);   //增加多边形      
             this.setState({isht:true});
         }     
@@ -339,7 +347,7 @@ export default class ListedMapBD extends React.Component{
             this.pointLayer.hide();
             let fnadd = this.fnAddmarker;
                 this.map.addEventListener('click', function(e){ //监听
-                fnadd(new window.BMap.Point(e.point.lng,e.point.lat));  
+                fnadd(new BMap.Point(e.point.lng,e.point.lat));  
             }); 
         }
         else
@@ -414,7 +422,7 @@ export default class ListedMapBD extends React.Component{
 
     getBoundary = (province, color) => {
         this.map.clearOverlays();
-        let bdary = new window.BMap.Boundary();
+        let bdary = new BMap.Boundary();
         bdary.get(province, (rs) => {       //获取行政区域
             // this.map.clearOverlays();        //清除地图覆盖物
             let count = rs.boundaries.length; //行政区域的点有多少个
@@ -424,7 +432,7 @@ export default class ListedMapBD extends React.Component{
             }
             let pointArray = [];
             for (let i = 0; i < count; i++) {
-                let ply = new window.BMap.Polygon(rs.boundaries[i], {
+                let ply = new BMap.Polygon(rs.boundaries[i], {
                     strokeWeight: 0.1,
                     strokeOpacity: 0,
                     strokeStyle: '',
@@ -440,7 +448,7 @@ export default class ListedMapBD extends React.Component{
     move2Location = (province) => {
         let center;
         if (province === undefined || province === '全国') {
-            center = new window.BMap.Point(104.284, 37.548);
+            center = new BMap.Point(104.284, 37.548);
             this.map.setZoom(5);
             setTimeout(() => {
                 this.map.panTo(center);
@@ -456,7 +464,7 @@ export default class ListedMapBD extends React.Component{
             }
         }).then( (data) => {
             if (data) {
-                center = new window.BMap.Point(parseInt(data.lon), parseInt(data.lat));
+                center = new BMap.Point(parseInt(data.lon), parseInt(data.lat));
                 this.map.panTo(center);
                 setTimeout(() => {
                     this.zoomInSlow(this.map.getZoom(), 6, 0.5);
@@ -599,11 +607,11 @@ export default class ListedMapBD extends React.Component{
 
     // 渲染地图
     renderOlMap = () => {
-        let map = new window.BMap.Map("container"); // 创建Map实例
-        // let map = new window.BMap.Map('baidumap');
-        map.centerAndZoom(new window.BMap.Point(104.284, 37.548), 5.5); // 初始化地图,设置中心点坐标和地图级别
-        map.addControl(new window.BMap.NavigationControl());
-        // map.addControl(new window.BMap.MapTypeControl()); //添加地图类型控件
+        let map = new BMap.Map("container"); // 创建Map实例
+        // let map = new BMap.Map('baidumap');
+        map.centerAndZoom(new BMap.Point(104.284, 37.548), 5.5); // 初始化地图,设置中心点坐标和地图级别
+        map.addControl(new BMap.NavigationControl());
+        // map.addControl(new BMap.MapTypeControl()); //添加地图类型控件
         map.setCurrentCity("北京"); // 设置地图显示的城市 此项是必须设置的
         map.enableScrollWheelZoom();
         map.enableContinuousZoom();
@@ -1647,7 +1655,7 @@ class QueryCompanyForm extends React.Component{
 
     //设置企业类别
     setItems = () => {
-        this.setState({items:['所有','上市企业','全球500强','中国500强','高新技术企业','规上企业','瞪羚企业','独角兽企业','专精特新小巨人']});
+        this.setState({items:['所有','国家企业技术中心','重点实验室','发改委国家工程研究中心','科技部工程技术研究中心']});
     }
     setCityInfo = () => {
         this.setState({
@@ -1784,7 +1792,7 @@ class QueryCompanyForm extends React.Component{
                             <input ref="company_name" />
                         </Modal>
                 </FormItem>
-                <FormItem label="企业类别">
+                <FormItem label="众创类别">
                     {
                          <Select
                             defaultValue={'所有'}
@@ -1798,7 +1806,7 @@ class QueryCompanyForm extends React.Component{
                     }
                 </FormItem>
 
-                <FormItem label="产业类型">
+                <FormItem label="类型">
                     {
                         <Select
                         defaultValue={'所有'}

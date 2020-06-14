@@ -52,20 +52,21 @@ class NavLeft extends React.Component {
 
     homeHandleClick = () => {
         const { dispatch } = this.props;
-        dispatch(switchMenu('功能说明'));
+        dispatch(switchMenu(''));
         this.setState({
             currentKey: ""
         });
     };
+
     render() {
         return (
             <div>
-                <NavLink to="/home" onClick={this.homeHandleClick}>
+                {/* <NavLink onClick={this.homeHandleClick}> */}
                     <div className="logo">
                         {/*<img src="/assets/logo-ant.svg" alt=""/>*/}
                         <h1>产业集群监测平台</h1>
                     </div>
-                </NavLink>
+                {/* </NavLink> */}
                 
                 <Menu
                     mode="inline"
@@ -73,30 +74,30 @@ class NavLeft extends React.Component {
                     inlineCollapsed={this.state.collapsed}
                     onClick={this.handleClick}
                 >
-                    <Menu.Item key="father1" ><Link to="/industrymain_company">产业集群检测平台</Link></Menu.Item>
+                    <Menu.Item key="father1" ><Link to="/industrymain_company">平台概览</Link></Menu.Item>
 
                     <SubMenu key="sub1"  title="产业主体">
                         <Menu.Item key="1"><Link to="/mainCompany">企业</Link></Menu.Item>
-                        <Menu.Item key="2">研究机构</Menu.Item>
-                        <Menu.Item key="3">园区</Menu.Item>
-                        <Menu.Item key="4">产业集群</Menu.Item>
-                        <Menu.Item key="5">联盟协会</Menu.Item>
-                        <Menu.Item key="6">众创空间</Menu.Item>
-                        <Menu.Item key="7">孵化器</Menu.Item>
-                        <Menu.Item key="8">人才</Menu.Item>
+                        <Menu.Item key="2"><Link to="/mainResearch">研究机构</Link></Menu.Item>
+                        {/* <Menu.Item key="3">园区</Menu.Item> */}
+                        <Menu.Item key="4"><Link to="/mainInstrument">产业集群</Link></Menu.Item>
+                        <Menu.Item key="5"><Link to="/mainLeague">联盟协会</Link></Menu.Item>
+                        <Menu.Item key="6"><Link to="/mainInnovation">众创空间</Link></Menu.Item>
+                        <Menu.Item key="7"><Link to="/mainIncabutor">孵化器</Link></Menu.Item>
+                        <Menu.Item key="8"><Link to="/mainPerson">人才</Link></Menu.Item>
                     </SubMenu>
                     <Menu.Item key="father2" ><Link to="/industrymain_company">产业</Link></Menu.Item>
                     <SubMenu key="sub3"  title="区域">
                         
-                        <Menu.Item key="10">城市数据展示</Menu.Item>
-                        <Menu.Item key="11">县域数据展示</Menu.Item>
-                        <Menu.Item key="12">园区数据展示</Menu.Item>
+                        <Menu.Item key="10"><Link to="/mainCompany">城市数据展示</Link></Menu.Item>
+                        <Menu.Item key="11"><Link to="/mainCompany">县域数据展示</Link></Menu.Item>
+                        <Menu.Item key="12"><Link to="/mainCompany">园区数据展示</Link></Menu.Item>
                     </SubMenu>
                     <SubMenu key="sub4"  title="个人工作台">
                         <Menu.Item key="9"><Link to="/diyArea">区域自定义</Link></Menu.Item>
                         <Menu.Item key="13"><Link to="/diyList">自动解析与可视化</Link></Menu.Item>
-                        <Menu.Item key="14">园区数据填报</Menu.Item>
-                        <Menu.Item key="15">区域数据填报</Menu.Item>
+                        <Menu.Item key="14"><Link to="/mainCompany">园区数据填报</Link></Menu.Item>
+                        <Menu.Item key="15"><Link to="/mainCompany">区域数据填报</Link></Menu.Item>
                     </SubMenu>
                 </Menu>
             </div>

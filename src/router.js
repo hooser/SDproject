@@ -21,6 +21,13 @@ import BdMap from './pages/map/bdmap'
 //新的页面索引
 import IndMain_Company from './pages/map/IndMain_company'
 import MainCompany from './pages/map/mainCompany'
+import MainResearch from './pages/map/mainResearch'
+import MainInstrument from './pages/map/mainInstrument'
+import MainLeague from './pages/map/mainLeague'
+import MainInnovation from './pages/map/mainInnovation'
+import MainIncabutor from './pages/map/mainIncabutor'
+import MainPerson from './pages/map/mainPerson'
+
 
 export default class ERouter extends React.Component{
 
@@ -39,6 +46,12 @@ export default class ERouter extends React.Component{
                                     //新的页面索引
                                     <Route path='/industrymain_company' component={IndMain_Company} />
                                     <Route path='/mainCompany' component={MainCompany} />
+                                    <Route path='/mainResearch' component={MainResearch} />
+                                    <Route path='/mainInstrument' component={MainInstrument} />
+                                    <Route path='/mainLeague' component={MainLeague} />
+                                    <Route path='/mainInnovation' component={MainInnovation} />
+                                    <Route path='/mainIncabutor' component={MainIncabutor} />
+                                    <Route path='/mainPerson' component={MainPerson} />
                                     <Route path='/diyList' component={DiyList} />
                                      <Route path='/diyArea' component={DiyArea} />
                                     {/*<Route path='/companymap' component={CompanyMap} />*/}
