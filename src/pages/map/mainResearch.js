@@ -115,6 +115,7 @@ export default class ListedMapBD extends React.Component{
 
         let request_json = null;                            //请求json
         if(this.state.companyType == "所有"){               //显示所有类型的企业
+            // companyKey = ["listed_company","china_top_500","tech_center"];
         }
         else
         {
@@ -124,13 +125,19 @@ export default class ListedMapBD extends React.Component{
     
         if(this.state.currentProvince == "全国")
         {
+            // provinceKey = ["上海","云南省","内蒙古自治区","北京","吉林省","四川省","天津","宁夏回族自治区","安徽省","山东省","山西省","广东省","广西壮族自治区","新疆维吾尔自治区","江苏省","江西省","河北省","河南省","浙江省","湖北省","海南省","湖南省","甘肃省","福建省","西藏自治区","贵州省","辽宁省","重庆","陕西省","青海省","黑龙江省"];
         }
         else
         {
             provinceKey = [];
             provinceKey.push(this.state.currentProvince);
         }
-        
+
+        console.log("provinceKey="+provinceKey);
+        console.log("companyKey="+companyKey);
+        // console.log("this.state.="+this.state.currentIndustry);
+        console.log("this.state.currentProvince="+this.state.currentProvince);
+        console.log("this.state.currentIndustry="+this.state.currentIndustry);
         if(this.state.currentIndustry == "所有")           //不要该字段
         {
             request_json = {
@@ -1648,7 +1655,7 @@ class QueryCompanyForm extends React.Component{
 
     //设置企业类别
     setItems = () => {
-        this.setState({items:['所有','上市企业','全球500强','中国500强','高新技术企业','规上企业','瞪羚企业','独角兽企业','专精特新小巨人']});
+        this.setState({items:['所有','国家企业技术中心','重点实验室','发改委国家工程研究中心','科技部工程技术研究中心']});
     }
     setCityInfo = () => {
         this.setState({
@@ -1785,7 +1792,7 @@ class QueryCompanyForm extends React.Component{
                             <input ref="company_name" />
                         </Modal>
                 </FormItem>
-                <FormItem label="企业类别">
+                <FormItem label="机构类别">
                     {
                          <Select
                             defaultValue={'所有'}
@@ -1799,7 +1806,7 @@ class QueryCompanyForm extends React.Component{
                     }
                 </FormItem>
 
-                <FormItem label="产业类型">
+                <FormItem label="类型">
                     {
                         <Select
                         defaultValue={'所有'}

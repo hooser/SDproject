@@ -31,7 +31,7 @@ class Header extends React.Component{
                             <Col align="left">
 
                                 <Row>
-                                   <font color="white" size = '5'>{menuName || '自定义园区'}</font>
+                                   <font color="white" size = '5'>{''}</font>
                                 </Row>
 
                             </Col>
