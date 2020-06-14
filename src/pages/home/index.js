@@ -33,7 +33,7 @@ import '../../config/envConfig';
 //导入antd
 import { Card, Table,Form, Row, Col, Statistic, Button, Icon, Input, Modal, Radio, Select, Divider} from 'antd';
 
-import BMap  from 'BMap';
+// import BMap  from 'BMap';
 import * as mapv from 'mapv';
 import Link from "react-router-dom/Link";
 
