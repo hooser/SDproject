@@ -164,7 +164,7 @@ export default class ListedMapBD extends React.Component{
                         <Card bordered={true} style={{ width:600 },{height:700}}>
                             <tr>
                                 <td><img src={ind1} height="70" width="70" span = '3'/></td>
-                                <td><h1>产业   0个</h1></td>
+                                <td><h1>产业   56个</h1></td>
                             </tr>
                             <Industry_Table data = {this.data} />
                         </Card>

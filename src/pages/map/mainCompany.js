@@ -108,7 +108,7 @@ export default class ListedMapBD extends React.Component{
         console.log("yeilp!");
         console.log(this.state.currentProvince);
         let currentCompany = '';
-        let companyKey = ["listed_company","china_top_500","tech_center"];                                 //企业类别显示字段
+        let companyKey = ["listed_company","china_top_500"];                                 //企业类别显示字段
         let industryKey = [];                                //产业类型显示字段
         let provinceKey = ["上海","云南省","内蒙古自治区","北京","吉林省","四川省","天津","宁夏回族自治区","安徽省","山东省","山西省","广东省","广西壮族自治区","新疆维吾尔自治区","江苏省","江西省","河北省","河南省","浙江省","湖北省","海南省","湖南省","甘肃省","福建省","西藏自治区","贵州省","辽宁省","重庆","陕西省","青海省","黑龙江省"];                                //省显示字段
 
@@ -118,7 +118,10 @@ export default class ListedMapBD extends React.Component{
         else
         {
             companyKey = [];
-            companyKey.push(this.state.companyType);
+            if(this.state.companyType == "上市企业")
+                companyKey.push("listed_company");
+            else if(this.state.companyType == "中国500强")
+                companyKey.push("china_top_500");
         }
     
         if(this.state.currentProvince == "全国")
@@ -220,8 +223,7 @@ export default class ListedMapBD extends React.Component{
             let companyLat = [];
             let companyLon = [];
 
-            if(data) {
-                console.log(data);
+            if(JSON.stringify(data.result) != "{}") {                
                 data.result.entity_name.forEach((item) => {
                     //console.log(item.entity_name[0].value);
                     companyName.push({
@@ -245,6 +247,14 @@ export default class ListedMapBD extends React.Component{
                     companyLon:companyLon
                 });
                
+            }
+            else{
+                this.setState({
+                    companyNum:0,
+                    companyName:[],
+                    companyLat:[],
+                    companyLon:[]
+                });
             }
             
         }).catch(function (error) {
@@ -1647,7 +1657,7 @@ class QueryCompanyForm extends React.Component{
 
     //设置企业类别
     setItems = () => {
-        this.setState({items:['所有','上市企业','全球500强','中国500强','高新技术企业','规上企业','瞪羚企业','独角兽企业','专精特新小巨人']});
+        this.setState({items:['所有','上市企业','中国500强','高新技术企业','规上企业','瞪羚企业','独角兽企业','专精特新小巨人']});
     }
     setCityInfo = () => {
         this.setState({

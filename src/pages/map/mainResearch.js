@@ -108,7 +108,7 @@ export default class ListedMapBD extends React.Component{
         console.log("yeilp!");
         console.log(this.state.currentProvince);
         let currentCompany = '';
-        let companyKey = ["listed_company","china_top_500","tech_center"];                                 //企业类别显示字段
+        let companyKey = ["tech_center"];                                 //企业类别显示字段
         let industryKey = [];                                //产业类型显示字段
         let provinceKey = ["上海","云南省","内蒙古自治区","北京","吉林省","四川省","天津","宁夏回族自治区","安徽省","山东省","山西省","广东省","广西壮族自治区","新疆维吾尔自治区","江苏省","江西省","河北省","河南省","浙江省","湖北省","海南省","湖南省","甘肃省","福建省","西藏自治区","贵州省","辽宁省","重庆","陕西省","青海省","黑龙江省"];                                //省显示字段
 
@@ -118,7 +118,8 @@ export default class ListedMapBD extends React.Component{
         else
         {
             companyKey = [];
-            companyKey.push(this.state.companyType);
+            if(this.state.companyType == "国家级技术中心")
+                companyKey.push("tech_center");
         }
     
         if(this.state.currentProvince == "全国")
@@ -1647,7 +1648,7 @@ class QueryCompanyForm extends React.Component{
 
     //设置企业类别
     setItems = () => {
-        this.setState({items:['所有','国家企业技术中心','重点实验室','发改委国家工程研究中心','科技部工程技术研究中心']});
+        this.setState({items:['所有','国家级技术中心','重点实验室','发改委国家工程研究中心','科技部工程技术研究中心']});
     }
     setCityInfo = () => {
         this.setState({
@@ -1712,7 +1713,7 @@ class QueryCompanyForm extends React.Component{
                     "type":"in",
                     "field":"label",
                     "conditions":[
-                        "listed_company"
+                        "tech_center"
                     ]
                 }
             ]
@@ -1798,7 +1799,7 @@ class QueryCompanyForm extends React.Component{
                     }
                 </FormItem>
 
-                <FormItem label="机构类型">
+                <FormItem label="类别信息">
                     {
                         <Select
                         defaultValue={'所有'}
