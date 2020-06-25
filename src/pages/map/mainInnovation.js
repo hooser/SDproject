@@ -576,7 +576,7 @@ export default class ListedMapBD extends React.Component{
                     draw: 'cluster'
                 };
                 this.clusterLayer = new mapv.baiduMapLayer(this.map, dataSet, clusterOptions);
-                // clusterLayer.hide();
+                this.clusterLayer.hide();
 
                 let heatmapOptions = {
                     size: 13,
@@ -1787,7 +1787,7 @@ class QueryCompanyForm extends React.Component{
                 <FormItem label="众创类别">
                     {
                          <Select
-                            defaultValue={'所有'}
+                            defaultValue={'请选择'}
                             style={{ width: 120 }}
                             onChange={this.handleCompanyChange}
                             >
@@ -1852,7 +1852,7 @@ class QueryCompanyForm extends React.Component{
                 </FormItem>*/}
 
                 <FormItem>
-                    <Select id="pid" defaultValue="2" onChange={this.props.selectLayer}>
+                    <Select id="pid" defaultValue="4" onChange={this.props.selectLayer}>
                         <Select.Option value="1">企业分布图</Select.Option>
                         <Select.Option value="2">企业聚类图</Select.Option>
                         <Select.Option value="3">企业热力图</Select.Option>

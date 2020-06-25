@@ -180,14 +180,14 @@ export default class ListedMapBD extends React.Component{
                                 <td><h1>产业主体 {this.state.MainIndustry} 个</h1></td>
                             </tr>
                                 <ul>
-                                    <h2><li>企业{this.state.company}（家) </li></h2>
-                                    <li><h2>研究机构（家）</h2></li>
-                                    <li><h2>园区（家）</h2></li>
-                                    <li><h2>产业集群（个）</h2></li>
-                                    <li><h2>联盟协会（个）</h2></li>
-                                    <li><h2>众创空间（个）</h2></li>
-                                    <li><h2>孵化器（个）</h2></li>
-                                    <li><h2>人才（位）</h2></li>
+                                    <h2><li><Link to="/diyArea">企业</Link>{this.state.company}（家)</li></h2>
+                                    <li><h2><Link to="/mainResearch">研究机构（家）</Link></h2></li>
+            
+                                    <li><h2><Link to="/mainInstrument">产业集群（个）</Link></h2></li>
+                                    <li><h2><Link to="/mainLeague">联盟协会（个）</Link></h2></li>
+                                    <li><h2><Link to="/mainInnovation">众创空间（个）</Link></h2></li>
+                                    <li><h2><Link to="/mainIncabutor">孵化器（个）</Link></h2></li>
+                                    <li><h2><Link to="/mainPerson">人才（位）</Link></h2></li>
                                 </ul>
                         </Card>
                     </div>
@@ -211,7 +211,7 @@ class Industry_Table extends React.Component{   //产业类型的表格
                 return (<tr key={index} >
                   {
                      row.map((cell,index)=>{
-                        return <td key={index}><Link to="/listedmapbd">{cell}</Link></td>
+                        return <td key={index}><Link to="/mainCompany">{cell}</Link></td>
                      })
                   }
                  </tr>

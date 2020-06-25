@@ -86,7 +86,7 @@ class NavLeft extends React.Component {
                         <Menu.Item key="7"><Link to="/mainIncabutor">孵化器</Link></Menu.Item>
                         <Menu.Item key="8"><Link to="/mainPerson">人才</Link></Menu.Item>
                     </SubMenu>
-                    <Menu.Item key="father2" ><Link to="/industrymain_company">产业</Link></Menu.Item>
+                    <Menu.Item key="father2" ><Link to="/Industries">产业</Link></Menu.Item>
                     <SubMenu key="sub3"  title="区域">
                         
                         <Menu.Item key="10"><Link to="/mainCompany">城市数据展示</Link></Menu.Item>
@@ -96,8 +96,7 @@ class NavLeft extends React.Component {
                     <SubMenu key="sub4"  title="个人工作台">
                         <Menu.Item key="9"><Link to="/diyArea">区域自定义</Link></Menu.Item>
                         <Menu.Item key="13"><Link to="/diyList">自动解析与可视化</Link></Menu.Item>
-                        <Menu.Item key="14"><Link to="/mainCompany">园区数据填报</Link></Menu.Item>
-                        <Menu.Item key="15"><Link to="/mainCompany">区域数据填报</Link></Menu.Item>
+                        
                     </SubMenu>
                 </Menu>
             </div>
