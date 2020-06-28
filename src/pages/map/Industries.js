@@ -33,7 +33,7 @@ import '../../config/envConfig'
 import * as mapv from 'mapv';
 import { Card, Table,Form, Row, Col, Statistic, Button, Icon, Input, Modal, Radio, Select, Divider,Menu, Dropdown} from 'antd';
 import SubMenu from 'antd/lib/menu/SubMenu';
-import { DownOutlined, PlusOutlined,PlusCircleOutlined } from '@ant-design/icons';
+import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -70,8 +70,10 @@ export default class ListedMapBD extends React.Component{
         noLayerShow:false,                   //无图层显示
 
         //右侧栏目点击后显示的企业点
-        singleCompanyLayerShow:false
-
+        singleCompanyLayerShow:false,
+        companyType:'所有',
+        currentProvince:'全国',
+        currentIndustry:'所有'
     };
 
     map = {};
@@ -104,9 +106,38 @@ export default class ListedMapBD extends React.Component{
     //测试函数
     queryCategory = () => {
         console.log("yeilp!");
-        let request_json = {
+        console.log(this.state.currentProvince);
+        let currentCompany = '';
+        let companyKey = ["listed_company","china_top_500"];                                 //企业类别显示字段
+        let industryKey = [];                                //产业类型显示字段
+        let provinceKey = ["上海","云南省","内蒙古自治区","北京","吉林省","四川省","天津","宁夏回族自治区","安徽省","山东省","山西省","广东省","广西壮族自治区","新疆维吾尔自治区","江苏省","江西省","河北省","河南省","浙江省","湖北省","海南省","湖南省","甘肃省","福建省","西藏自治区","贵州省","辽宁省","重庆","陕西省","青海省","黑龙江省"];                                //省显示字段
+
+        let request_json = null;                            //请求json
+        if(this.state.companyType == "所有"){               //显示所有类型的企业
+        }
+        else
+        {
+            companyKey = [];
+            if(this.state.companyType == "上市企业")
+                companyKey.push("listed_company");
+            else if(this.state.companyType == "中国500强")
+                companyKey.push("china_top_500");
+        }
+    
+        if(this.state.currentProvince == "全国")
+        {
+        }
+        else
+        {
+            provinceKey = [];
+            provinceKey.push(this.state.currentProvince);
+        }
+        
+        if(this.state.currentIndustry == "所有")           //不要该字段
+        {
+            request_json = {
             "dimensions":[
-                "id",
+  
                 "entity_name"
             ],
             "metrics":[
@@ -117,7 +148,7 @@ export default class ListedMapBD extends React.Component{
                     "alias":"lon"
                 },
                  {
-                    "type":"sum",
+                    "type":"avg",
                     "field":"lat",
                     "in_data":false,
                     "alias":"lat"
@@ -127,38 +158,85 @@ export default class ListedMapBD extends React.Component{
                 {
                     "type":"in",
                     "field":"label",
-                    "conditions":[
-                        "listed_company"
-                    ]
+                    "conditions":companyKey
+                },
+                {
+                    "type":"in",
+                    "field":"province",
+                    "conditions":provinceKey
                 }
-            ]
-        };
+                ]
+            };
+        }
+        else{
+            industryKey.push(this.state.currentIndustry);
+            request_json = {
+            "dimensions":[
+  
+                "entity_name"
+            ],
+            "metrics":[
+                {
+                    "type":"avg",
+                    "field":"lon",
+                    "in_data":false,
+                    "alias":"lon"
+                },
+                 {
+                    "type":"avg",
+                    "field":"lat",
+                    "in_data":false,
+                    "alias":"lat"
+                }
+            ],
+            "filters":[
+                {
+                    "type":"in",
+                    "field":"label",
+                    "conditions":companyKey
+                },
+                {
+                    "type":"in",
+                    "field":"CCID_industry",
+                    "in_data":true,
+                    "conditions":industryKey
+
+                },
+                {
+                    "type":"in",
+                    "field":"province",
+                    "conditions":provinceKey
+                }
+                ]
+            };
+        }
+
         axios.get({
             url:'/entity/statistic',
             data:{
                 params: {request_json: request_json}
             }
         }).then( (data) => {                                //js异步编程，es6 promise, 后端把数据传给前端，正确进入then，否则进入catch
-            //console.log(data.result.id);
+            console.log(data);
             let tcompany_num = 0;
             let companyName = [];
             let companyLat = [];
             let companyLon = [];
 
-            if(data && data.result.id) {
-                data.result.id.forEach((item) => {
+            if(JSON.stringify(data.result) != "{}") {                
+                data.result.entity_name.forEach((item) => {
                     //console.log(item.entity_name[0].value);
                     companyName.push({
                         key:tcompany_num,
-                        name:item.entity_name[0].value,
+                        name:item.value,
                     });
                     companyLat.push(
                         // key:tcompany_num,
-                        item.entity_name[0].lat
+                        item.lat
                     );
                     companyLon.push(
                         // key:tcompany_num,
-                        item.entity_name[0].lon
+                        item.lon
                     );
                     tcompany_num = tcompany_num + 1;
                 });
@@ -170,9 +248,17 @@ export default class ListedMapBD extends React.Component{
                 });
                
             }
+            else{
+                this.setState({
+                    companyNum:0,
+                    companyName:[],
+                    companyLat:[],
+                    companyLon:[]
+                });
+            }
             
         }).catch(function (error) {
-            console.log(error);
+            // console.log(error);
         });
     };
 
@@ -536,6 +622,20 @@ export default class ListedMapBD extends React.Component{
         this.buildLayers();
     };
 
+    // renderOlMapwithout = () => {
+    //     let map = new window.BMap.Map("container"); // 创建Map实例
+    //     // let map = new window.BMap.Map('baidumap');
+    //     map.centerAndZoom(new window.BMap.Point(104.284, 37.548), 5.5); // 初始化地图,设置中心点坐标和地图级别
+    //     map.addControl(new window.BMap.NavigationControl());
+    //     // map.addControl(new window.BMap.MapTypeControl()); //添加地图类型控件
+    //     map.setCurrentCity("北京"); // 设置地图显示的城市 此项是必须设置的
+    //     map.enableScrollWheelZoom();
+    //     map.enableContinuousZoom();
+
+    //     this.map = map;
+    //     // this.buildLayers();
+    // };
+
     selectLayer = (layer) => {
         if(layer == 1){
             this.clusterLayer.show();
@@ -731,7 +831,7 @@ export default class ListedMapBD extends React.Component{
             data.push({
                 geometry: {
                     type: 'Point',
-                    coordinates: [this.state.companyLon[selectedRowKeys[i]], this.state.companyLat[selectedRowKeys[i]]]
+                    coordinates: [this.state.companyLon[i], this.state.companyLat[i]]
                 },
                 count: 30 * Math.random()
             });
@@ -755,7 +855,7 @@ export default class ListedMapBD extends React.Component{
         this.setState({singleCompanyLayerShow:false});
     };
 
-    //父组件从子组件获取参数
+    //父组件从子组件获取企业列表
     getChildrenMsg = (result, selectedRowKeys) => {
         //console.log(result, selectedRowKeys);
         // 很奇怪这里的result就是子组件那bind的第一个参数this，msg是第二个参数
@@ -767,23 +867,89 @@ export default class ListedMapBD extends React.Component{
         this.printsingleCompanyLayer(childrenRst);
     };
 
-    render(){
-        let city = this.state.city;
-        if (city === "全国" || city === "全省" || city === "上海市" || city === "北京市") {
-            city = "";
-        }
-        let preTitle = this.state.province + city;
-        let barTitle = preTitle + "年度利润";
-        let pieTitle = preTitle + "产业类型结构";
+    //父亲组件打印所有企业列表
+    showAllCompany = () => {
 
-        let barOption = this.state.barOption;
-       // console.log(barOption);
+        console.log("showAllCompany");
+        //判断当前显示的图层，关闭之
+        if(this.state.pointLayerShow == true)
+        {
+            this.pointLayer.show();
+            this.pointLayer.hide();
+        }
+        else if(this.state.clusterLayerShow == true)
+        {
+            this.clusterLayer.show();
+            this.clusterLayer.hide();
+        }
+        else if(this.state.heatmapLayerShow == true)
+        {
+            this.heatmapLayer.show();
+            this.heatmapLayer.hide();
+        }
+        else
+        {
+            
+        }
+
+        if(this.state.singleCompanyLayerShow == true){
+            this.singleCompanyLayer.hide();
+        }
+
+        let data = [];
+        console.log(this.state.companyLon.length);
+        for(let i = 0; i < this.state.companyName.length; i++) {
+            
+            data.push({
+                geometry: {
+                    type: 'Point',
+                    coordinates: [this.state.companyLon[i], this.state.companyLat[i]]
+                },
+                count: 30 * Math.random()
+            });
+        }
+
+        console.log(data);
+
+        let dataSet = new mapv.DataSet(data);
+
+        let pointOptions = {
+
+            fillStyle: 'rgba(0, 191, 243, 0.7)', 
+            size: 3,
+            draw: 'simple'
+        };
+
+        this.singleCompanyLayer = new mapv.baiduMapLayer(this.map, dataSet, pointOptions);
+        this.setState({singleCompanyLayerShow:true});
+    };
+
+    //父组件从子组件获取企业类别
+    getChildrencompanyType = (result,companyT) => {
+        this.setState({companyType:companyT});
+        console.log(this.state.companyType);
+    };
+
+    //父组件从子组件获取产业类型
+    getChildrencurrentIndustry = (result,currentI) => {
+        this.setState({currentIndustry:currentI});
+        console.log(this.state.currentIndustry);
+    };
+
+    //父组件从子组件获取省份
+    getChildrencurrentProvince = (result,currnetP) => {
+        this.setState({currentProvince:currnetP});
+        console.log(this.state.currentProvince);
+    };
+
+    render(){
+       
 
         return (
             <Row style={{backgroundColor:"white"}}>
                 <Row>
                         <Card style={{backgroundColor:"white"}}>
-                            <QueryCompanyForm queryCategory = {this.queryCategory} queryCompany = { this.queryCompanyBySelect } addDrawLayer = {this.addDrawLayer} selectLayer = {this.selectLayer} category = {this.state.category} province2city = {this.state.province2city} clickonzdy = {this.state.clickonzdy} />
+                            <QueryCompanyForm parent={this} queryCategory = {this.queryCategory} queryCompany = { this.queryCompanyBySelect } addDrawLayer = {this.addDrawLayer} selectLayer = {this.selectLayer} category = {this.state.category} province2city = {this.state.province2city} clickonzdy = {this.state.clickonzdy} />
                        </Card>
                        <Modal
                             title=""
@@ -804,7 +970,7 @@ export default class ListedMapBD extends React.Component{
                         </Card>
                     </Col>
                     <Col span={7}>
-                        <ListInfo singleCompanyLayerShow={this.state.singleCompanyLayerShow} clearsingleCompanyLayer={this.clearsingleCompanyLayer} parent={this} companyNum={this.state.companyNum} companyName={this.state.companyName} showCompanyInMap={this.showCompanyInMap} />
+                        <ListInfo showAllCompany={this.showAllCompany} singleCompanyLayerShow={this.state.singleCompanyLayerShow} clearsingleCompanyLayer={this.clearsingleCompanyLayer} parent={this} companyNum={this.state.companyNum} companyName={this.state.companyName} showCompanyInMap={this.showCompanyInMap} />
                     </Col>
                 </Row>
             </Row>
@@ -862,6 +1028,9 @@ class ListInfo extends React.Component{
                         <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading}>
                             显示
                         </Button>
+                        <Button type="primary" onClick={this.props.showAllCompany}  loading={loading}>
+                            全部
+                        </Button>
                         <Button type="primary" onClick={this.props.clearsingleCompanyLayer} disabled={!this.props.singleCompanyLayerShow}>
                             清除
                         </Button>
@@ -881,9 +1050,11 @@ class ListInfo extends React.Component{
 
 class QueryCompanyForm extends React.Component{
    
-    provinceData = ["上海市","云南省","内蒙古自治区","北京市","吉林省","四川省","天津市","宁夏回族自治区","安徽省","山东省","山西省","广东省","广西壮族自治区","新疆维吾尔自治区","江苏省","江西省","河北省","河南省","浙江省","湖北省","海南省","湖南省","甘肃省","福建省","西藏自治区","贵州省","辽宁省","重庆","陕西省","青海省","黑龙江省"];
+    provinceData = ["全国","上海","云南省","内蒙古自治区","北京","吉林省","四川省","天津","宁夏回族自治区","安徽省","山东省","山西省","广东省","广西壮族自治区","新疆维吾尔自治区","江苏省","江西省","河北省","河南省","浙江省","湖北省","海南省","湖南省","甘肃省","福建省","西藏自治区","贵州省","辽宁省","重庆","陕西省","青海省","黑龙江省"];
     cityData = {
-        "上海市": [
+        "全国":[" "
+        ],
+        "上海": [
             "上海城区"
         ],
         "云南省": [
@@ -922,7 +1093,7 @@ class QueryCompanyForm extends React.Component{
             "阿拉善盟",
             "霍林郭勒市"
         ],
-        "北京市": [
+        "北京": [
             "北京城区"
         ],
         "吉林省": [
@@ -975,7 +1146,7 @@ class QueryCompanyForm extends React.Component{
             "阿坝藏族羌族自治州",
             "雅安市"
         ],
-        "天津市": [
+        "天津": [
             "天津城区"
         ],
         "宁夏回族自治区": [
@@ -1430,7 +1601,7 @@ class QueryCompanyForm extends React.Component{
             "阜新市",
             "鞍山市"
         ],
-        "重庆市": [
+        "重庆": [
             "重庆城区"
         ],
         "陕西省": [
@@ -1479,14 +1650,17 @@ class QueryCompanyForm extends React.Component{
         cities: [],
         secondCity: '',
         industryType:[],
-        provinceData:[],
-        cityData:{},
         name:'',
         items:[],
         visible:false,
-        company_name:''
+        company_name:'',
+       
     };
 
+
+    companyType = '';
+    currentProvince = '';
+    currentIndustry = '';
     index = 0;
 
     componentWillMount(){
@@ -1497,7 +1671,7 @@ class QueryCompanyForm extends React.Component{
 
     //设置企业类别
     setItems = () => {
-        this.setState({items:['所有','上市企业','全球500强','中国500强','高新技术企业','规上企业','瞪羚企业','独角兽企业','专精特新小巨人']});
+        this.setState({items:['所有','上市企业','中国500强','高新技术企业','规上企业','瞪羚企业','独角兽企业','专精特新小巨人']});
     }
     setCityInfo = () => {
         this.setState({
@@ -1507,10 +1681,28 @@ class QueryCompanyForm extends React.Component{
     }
 
     handleProvinceChange = value => {
+    console.log("value="+value);
+    // console.log(value);
     this.setState({
+      // currentProvince:value,
       cities: this.cityData[value],
-      secondCity: this.cityData[value][0],
+      secondCity: this.cityData[value][0]
     });
+    console.log(this.currentProvince);
+    this.props.parent.getChildrencurrentProvince(this,value);
+  };
+
+  handleIndustryChange = value => {
+    // console.log(this.currentIndustry);
+
+    this.props.parent.getChildrencurrentIndustry(this,value);
+  };
+
+  handleCompanyChange = value => {
+    
+    // this.companyType = value;
+    console.log(this.companyType);
+    this.props.parent.getChildrencompanyType(this,value);
   };
 
     onSecondCityChange = value => {
@@ -1520,17 +1712,53 @@ class QueryCompanyForm extends React.Component{
   };
 
     setType = () => {
+
+        let request_json = {
+            "dimensions":[
+                "CCID_industry"
+            ],
+            "metrics":[
+                {
+                    "type":"avg",
+                    "field":"lon",
+                    "in_data":false,
+                    "alias":"lon"
+                },
+                 {
+                    "type":"avg",
+                    "field":"lat",
+                    "in_data":false,
+                    "alias":"lat"
+                }
+            ],
+            "filters":[
+                {
+                    "type":"in",
+                    "field":"label",
+                    "conditions":[
+                        "listed_company"
+                    ]
+                }
+            ]
+        };
+
         axios.get({
-            url:'/listed/category',
+            url:'/entity/statistic',
             data:{
-                params:{}
+                params: {request_json: request_json}
             }
-        }).then( (data) => {     
-            // console.log(data);                          
-            if(data && data.province && data.type) {
+        }).then( (data) => {
+            // console.log(data.result.id.entity_name.CCID_industry.value);
+            console.log(data);
+            // let categorylen = data.result.length;
+            // console.log(categorylen);
+            let CCID_industrylen = data.result.CCID_industry.length;
+            console.log(data.result.CCID_industry);       
+
+            if(data.result.CCID_industry) {
                 let tempType = ['所有'];
-                for (let key in data.type) {
-                    tempType.push(data.type[key]);
+                for (let i = 0; i < CCID_industrylen; i++) {
+                    tempType.push(data.result.CCID_industry[i].value);
                 }
                 this.setState({industryType:tempType});
                 // console.log(this.state.industryType);
@@ -1539,26 +1767,7 @@ class QueryCompanyForm extends React.Component{
             console.log(error);
         });
     };
-
-    handleQueryCompany = () => {
-        let fieldsValue = this.props.form.getFieldsValue();
-        this.props.form.validateFields((err,values)=>{
-            if(!err){
-                this.props.queryCompany(fieldsValue);
-            }
-        })
-    };
-
-    handleCompanyChange = (province) =>{      //处理公司类别变化
-        console.log(province);
-        this.setState({province})
-    };
-
-    handleTypeChange = (typeSelect) =>{
-        console.log(typeSelect);              //获取到了下拉按钮的值
-        this.props.changeTypeSelect(typeSelect);
-        //this.setState({shape})
-    };
+    
 
     handleOk = e => {
 
@@ -1588,7 +1797,7 @@ class QueryCompanyForm extends React.Component{
         return (
             <Form layout="inline">
                 <FormItem>
-                    <PlusCircleOutlined  onClick={this.addCompanies}/>
+                    {/* <PlusCircleOutlined  onClick={this.addCompanies}/> */}
                     <Modal
                             title=""
                             visible={this.state.visible}
@@ -1599,12 +1808,12 @@ class QueryCompanyForm extends React.Component{
                             <input ref="company_name" />
                         </Modal>
                 </FormItem>
-                <FormItem label="企业类别">
+                <FormItem label="产业类型">                
                     {
                          <Select
-                            defaultValue={'所有'}
+                            defaultValue={'请选择'}
                             style={{ width: 120 }}
-                            onChange={this.handleProvinceChange}
+                            onChange={this.handleCompanyChange}
                             >
                                 {this.state.items.map(item => (
                                     <Option key={item}>{item}</Option>
@@ -1613,12 +1822,12 @@ class QueryCompanyForm extends React.Component{
                     }
                 </FormItem>
 
-                <FormItem label="产业类型">
+                <FormItem label="企业类别">
                     {
                         <Select
                         defaultValue={'所有'}
                         style={{ width: 120 }}
-                        onChange={this.handleProvinceChange}
+                        onChange={this.handleIndustryChange}
                         >
                             {this.state.industryType.map(ind => (
                             <Option key={ind}>{ind}</Option>
@@ -1659,7 +1868,7 @@ class QueryCompanyForm extends React.Component{
                 </FormItem>*/}
                 
                 <FormItem>
-                    <Button type="primary" onClick={this.props.queryCategory}>查询</Button>
+                    <Button type="primary" onClick={this.props.queryCategory }>查询</Button>
                 </FormItem>
 
                 {/*<FormItem>
