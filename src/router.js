@@ -43,7 +43,7 @@ export default class ERouter extends React.Component{
                         <Route path="/" render={()=>
                             <Admin>              { /* Admin在以下部分变换 */}
                                 <Switch>
-                                    <Route path='/industrymain_company' component={Home} />
+                                    {/*<Route path='/industrymain_company' component={Home} />*/}
                                     {/*<Route path="/companylist" component={BasicTable} />*/}
 
                                     //新的页面索引

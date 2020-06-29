@@ -164,7 +164,7 @@ export default class ListedMapBD extends React.Component{
                         <Card bordered={true} style={{ width:600 },{height:700}}>
                             <tr>
                                 <td><img src={ind1} height="70" width="70" span = '3'/></td>
-                                <td><h1>产业   56个</h1></td>
+                                <td><h1><Link to="/Industries">产业 56个 </Link></h1></td>
                             </tr>
                             <Industry_Table data = {this.data} />
                         </Card>
@@ -177,11 +177,12 @@ export default class ListedMapBD extends React.Component{
                             <tr>
                                 <td><img src={ind2} height="70" width="70" /></td>
                                 <td></td>
-                                <td><h1>产业主体 {this.state.MainIndustry} 个</h1></td>
+                                {/*<td><h1>产业主体 {this.state.MainIndustry} 个</h1></td>*/}
+                                <td><h1>产业主体 3226 个</h1></td>
                             </tr>
                                 <ul>
-                                    <h2><li><Link to="/diyArea">企业</Link>{this.state.company}（家)</li></h2>
-                                    <li><h2><Link to="/mainResearch">研究机构（家）</Link></h2></li>
+                                    <h2><li><Link to="/mainCompany">企业{this.state.company}（家) </Link></li></h2>
+                                    <li><h2><Link to="/mainResearch">研究机构 292（家）</Link></h2></li>
             
                                     <li><h2><Link to="/mainInstrument">产业集群（个）</Link></h2></li>
                                     <li><h2><Link to="/mainLeague">联盟协会（个）</Link></h2></li>

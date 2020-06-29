@@ -1000,7 +1000,7 @@ class ListInfo extends React.Component{
                 <Col style={{backgroundColor:"white"}} >
                     <div className="card-test">
                         <Card bordered={false} style={{ width:1000 },{height:600}} >  
-                        <h1>共有{this.props.companyNum}家企业</h1>
+                        <h1>共有{this.props.companyNum}个众创空间</h1>
                         <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading}>
                             显示
                         </Button>
